@@ -1,7 +1,5 @@
-import {RequestError} from "../app";
-interface IMessages {
-    [code:number]: string
-}
+import {IMessages, RequestError} from "../interfaces";
+
 const messages: IMessages= {
     400: "Bad Request",
     401: "Unauthorized",

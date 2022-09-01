@@ -1,19 +1,9 @@
 import mongoose, {Document} from "mongoose";
-import {NextFunction} from "express";
-import {RequestError} from "../app";
 import Joi from "joi";
-const {Schema, model} = mongoose;
+import {handleErrors} from "../helpers";
+import {IUser} from "../interfaces";
 
-export interface IUser {
-    name: string,
-    password: string,
-    token: string,
-    email: string,
-    phone: string,
-    passport: string,
-    birthday: string,
-    id?: number
-}
+const {Schema, model} = mongoose;
 
 const userSchema = new Schema<IUser>({
     name: {type: String, required: true, match: /[a-zA-Zа-яА-Я]+/},
@@ -35,16 +25,6 @@ export const add = Joi.object({
     birthday: Joi.string().required()
 });
 
-const handleErrors = (error: RequestError, data: Document, next: NextFunction)=> {
-    const {name, code} = error;
-    if(name === "MongoServerError" && code === 11000) {
-        error.status = 409;
-    } else {
-        error.status = 400;
-        error.message = "missing required name field";
-    }
-    next()
-}
 //@ts-ignore
 userSchema.post('save', handleErrors);
 

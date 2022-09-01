@@ -12,19 +12,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const User_1 = __importDefault(require("../../models/User"));
-const add = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield User_1.default.create(req.body);
-    const user = {
-        id: result.id,
-        name: result.name,
-        password: result.password,
-        token: result.token,
+const helpers_1 = require("../../helpers");
+const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email, password } = req.body;
+    const user = yield User_1.default.findOne({ email });
+    if (user) {
+        throw (0, helpers_1.createError)(409, "Email is already exist");
+    }
+    const hashPassword = yield bcryptjs_1.default.hash(password, 10);
+    const result = yield User_1.default.create({ email, password: hashPassword });
+    res.status(201).json({
         email: result.email,
-        phone: result.phone,
-        passport: result.passport,
-        birthday: result.birthday
-    };
-    res.status(201).json(user);
+    });
 });
-exports.default = add;
+exports.default = register;

@@ -1,18 +1,20 @@
 import express from "express";
+import {validation} from "../../middlewares";
+import {ctrlWrapper} from "../../helpers";
+import * as ctrl from "../../controllers/auth"
+import {registerSchema, loginSchema} from "../../models/Auth";
 
-const router = express.Router();
+const authRouter = express.Router();
 
 //signup
-router.post("/register");
+authRouter.post("/register", validation(registerSchema), ctrlWrapper(ctrl.register));
 
 // signin
-router.post("/login");
+authRouter.post("/login", validation(loginSchema), ctrlWrapper(ctrl.login));
 
 //logout
-router.get("/logout");
+authRouter.get("/logout");
 
-router.get("/current");
+authRouter.get("/current");
 
-
-
-export default router;
+export default authRouter;

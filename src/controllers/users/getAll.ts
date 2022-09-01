@@ -1,5 +1,6 @@
-import User, {IUser} from "../../models/User";
+import User from "../../models/User";
 import {Request, Response} from "express";
+import {IUser} from "../../interfaces";
 
 const getAll = async (req: Request, res: Response): Promise<void> => {
     const {page = 1, limit = 10} = req.query;

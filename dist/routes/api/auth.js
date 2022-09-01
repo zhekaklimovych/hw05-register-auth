@@ -27,31 +27,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const cors_1 = __importDefault(require("cors"));
-const mongoose_1 = __importDefault(require("mongoose"));
-const dotenv_1 = __importDefault(require("dotenv"));
-const routes = __importStar(require("./routes/api"));
-dotenv_1.default.config();
-const { DB_HOST = 'http://localhost:3000', PORT = 3000 } = process.env;
-const app = (0, express_1.default)();
-app.use((0, cors_1.default)());
-app.use(express_1.default.json());
-app.use('/api/register', routes.auth);
-app.use('/api/users/', routes.users);
-app.use((req, res) => {
-    res.status(404).json({ message: "Not found" });
-});
-app.use((error, req, res, next) => {
-    const { status = 500, message = "Server error" } = error;
-    res.status(status).json({ message });
-});
-mongoose_1.default.connect(DB_HOST)
-    .then(() => {
-    console.log("DataBase connected...");
-    app.listen(PORT);
-    console.log(`Server running on port ${PORT}`);
-})
-    .catch((error) => {
-    console.log(error.message);
-    process.exit(1);
-});
+const middlewares_1 = require("../../middlewares");
+const helpers_1 = require("../../helpers");
+const ctrl = __importStar(require("../../controllers/auth"));
+const Auth_1 = require("../../models/Auth");
+const authRouter = express_1.default.Router();
+authRouter.post("/register", (0, middlewares_1.validation)(Auth_1.registerSchema), (0, helpers_1.ctrlWrapper)(ctrl.register));
+authRouter.post("/login", (0, middlewares_1.validation)(Auth_1.loginSchema), (0, helpers_1.ctrlWrapper)(ctrl.login));
+authRouter.get("/logout");
+authRouter.get("/current");
+exports.default = authRouter;

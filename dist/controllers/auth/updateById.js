@@ -13,18 +13,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const User_1 = __importDefault(require("../../models/User"));
-const add = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield User_1.default.create(req.body);
-    const user = {
-        id: result.id,
-        name: result.name,
-        password: result.password,
-        token: result.token,
-        email: result.email,
-        phone: result.phone,
-        passport: result.passport,
-        birthday: result.birthday
-    };
-    res.status(201).json(user);
+const index_1 = require("../../helpers/index");
+const updateById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const result = yield User_1.default.findByIdAndUpdate(id, req.body, { new: true });
+    if (!result) {
+        throw (0, index_1.createError)(404, "Not found");
+    }
+    res.json(result);
 });
-exports.default = add;
+exports.default = updateById;

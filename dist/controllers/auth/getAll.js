@@ -13,18 +13,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const User_1 = __importDefault(require("../../models/User"));
-const add = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield User_1.default.create(req.body);
-    const user = {
-        id: result.id,
-        name: result.name,
-        password: result.password,
-        token: result.token,
-        email: result.email,
-        phone: result.phone,
-        passport: result.passport,
-        birthday: result.birthday
-    };
-    res.status(201).json(user);
+const getAll = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { page = 1, limit = 10 } = req.query;
+    const skip = (Number(page) - 1) * Number(limit);
+    const result = yield User_1.default.find({}, "-createdAt -updatedAt", { skip, limit: Number(limit) });
+    res.json(result);
 });
-exports.default = add;
+exports.default = getAll;

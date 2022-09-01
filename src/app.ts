@@ -3,12 +3,9 @@ import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import {Request, Response, NextFunction} from "express";
-import UserRouter from './routes/api/users.js';
+import * as routes from './routes/api';
+import {RequestError} from "./interfaces";
 
-export interface RequestError extends Error {
-    status?: number,
-    code?: number
-}
 dotenv.config()
 
 const {DB_HOST = 'http://localhost:3000', PORT = 3000} = process.env;
@@ -17,7 +14,8 @@ const app: Express = express();
 
 app.use(cors());
 app.use(express.json());
-app.use('/api/users/', UserRouter);
+app.use('/api/register', routes.auth);
+app.use('/api/users/', routes.users);
 
 app.use((req: Request, res: Response): void => {
     res.status(404).json({ message: "Not found" })
